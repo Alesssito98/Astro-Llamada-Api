@@ -1,0 +1,177 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Card from '../components/Card.astro';
+
+// URL de la API
+const API_URL = `https://api.themoviedb.org/3/movie/popular?api_key=${import.meta.env.TMDB_API_KEY}&language=en-US&page=1`;
+
+// Array de películas
+let movies = [];
+
+// Llamada a la API
+try {
+
+  const response = await fetch(API_URL);
+
+  if (response.ok) {
+    const data = await response.json();
+    movies = data.results;
+
+  } else {
+    console.error('Error al obtener las películas:', response.status);
+  }
+
+} catch (error) {
+  console.error('Error en la llamada a la API:', error);
+}
+
+---
+
+<Layout title="Películas de TheMovieDB">
+
+	<main>
+		<h1>Películas de <a href="https://www.themoviedb.org/" target="_blank" class="movies">TheMovieDB</a></h1>
+		<div class="card-container">
+		  {movies.map(movie => (
+			<Card
+				href={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+				title={movie.title}
+				body={movie.overview}
+			/>
+		  ))}
+		  
+		  <Card
+		  	href={``}
+			title={"Not Found"}
+			body={"Not Found"}
+	  />
+		</div>
+	  </main>
+	
+</Layout>
+
+<style>
+	
+	main {
+
+		margin: auto;
+		padding: 1rem;
+		max-width: 100dvh;
+		color: white;
+		font-size: 20px;
+		line-height: 1.6;
+
+	}
+
+	.astro-a {
+
+		position: absolute;
+		top: -32px;
+		transform: translatex(-50%);
+		width: 220px;
+		height: auto;
+		z-index: -1;
+
+	}
+
+	h1 {
+
+		font-size: 4rem;
+		font-weight: 700;
+		line-height: 1;
+		text-align: center;
+		margin-bottom: 1em;
+
+	}
+	.text-gradient {
+
+		background-image: var(--accent-gradient);
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		background-size: 400%;
+		background-position: 0%;
+
+	}
+
+	.instructions {
+
+		margin-bottom: 2rem;
+		border: 1px solid rgba(var(--accent-light), 25%);
+		background: linear-gradient(rgba(var(--accent-dark), 66%), rgba(var(--accent-dark), 33%));
+		padding: 1.5rem;
+		border-radius: 8px;
+
+	}
+
+	.instructions code {
+
+		font-size: 0.8em;
+		font-weight: bold;
+		background: rgba(var(--accent-light), 12%);
+		color: rgb(var(--accent-light));
+		border-radius: 4px;
+		padding: 0.3em 0.4em;
+
+	}
+
+	.instructions strong {
+		color: rgb(var(--accent-light));
+	}
+
+	.link-card-grid {
+
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(24ch, 1fr));
+		gap: 2rem;
+		padding: 0;
+
+	}
+
+	.card-container {
+
+		max-width: 80dvw;
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: 2rem;
+
+	}
+
+	@media (min-width: 812px) {
+
+		.card-container {
+  			grid-template-columns: repeat(2, 1fr);
+		}
+
+	}
+
+	@media (min-width: 1024px) {
+
+  		.card-container {
+    		grid-template-columns: repeat(3, 1fr);
+  		}
+
+	}
+
+	main {
+
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: start;
+		width: 100%;
+
+	}
+
+	a {
+
+		text-decoration: none;
+		color: var(--accent-light);;
+
+	}
+
+	.movies:hover {
+		text-decoration: underline;
+	}
+
+
+</style>
